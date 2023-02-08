@@ -4,10 +4,12 @@ import "tiktok/service"
 
 type Controllers struct {
 	UserController *UserController
+	FeedController *FeedController
 }
 
-func InitController(service *service.Services) *Controllers {
+func InitController(services *service.Services) *Controllers {
 	return &Controllers{
-		UserController: NewUserController(service.UserService),
+		UserController: NewUserController(services.UserService),
+		FeedController: NewFeedController(services.FeedService),
 	}
 }

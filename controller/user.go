@@ -3,6 +3,7 @@ package controller
 import (
 	"github.com/gin-gonic/gin"
 	"net/http"
+	"tiktok/controller/response"
 	"tiktok/service"
 )
 
@@ -17,13 +18,13 @@ func NewUserController(service *service.UserService) *UserController {
 }
 
 type UserResponse struct {
-	Response
+	response.Response
 	Content string `json:"content"`
 }
 
 func (c *UserController) Hello(g *gin.Context) {
 	g.JSON(http.StatusOK, UserResponse{
-		Response: Response{StatusCode: http.StatusOK},
+		Response: response.Response{StatusCode: http.StatusOK},
 		Content:  "hello gin",
 	})
 }
@@ -34,7 +35,7 @@ func (c *UserController) Create(context *gin.Context) {
 
 	}
 	context.JSON(http.StatusOK, UserResponse{
-		Response: Response{StatusCode: http.StatusOK},
+		Response: response.Response{StatusCode: http.StatusOK},
 		Content:  "创建成功",
 	})
 }
