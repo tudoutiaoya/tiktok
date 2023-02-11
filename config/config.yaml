@@ -6,3 +6,11 @@ DatabaseSettings:
 
 JWTSettings:
   SecretKey: "wokanguoliuxingzhuiruodimian"
+
+
+QiniuSettings:
+  AccessKey: AEj6dhT5C0vmu4_Rx5jQrpeOrGhx9sDBKEl8p5Uh
+  SecretKey: fUslXvpVI-yF9VnZdkBvyFlvEvfOROVS4TrsBJQt
+  Bucket: my-tiktok
+  Prefix: http://tiktok.tudoutiao.pro/
+  VideoPath: video/

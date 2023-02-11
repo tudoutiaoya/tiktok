@@ -15,6 +15,9 @@ func HandleServiceErrRes(err error) *ErrResponse {
 	return &ErrResponse{StatusCode: 50000, StatusMsg: err.Error()}
 }
 
+// 鉴权失败，需要登录
+var NoLoginErr = NewErrResponse(40100, "请登录")
+
 // Controller层一些参数错误
 var (
 	ParamIllegal      = NewErrResponse(50001, "参数不合法")

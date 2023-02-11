@@ -25,3 +25,13 @@ func (dao *FeedDao) GetFeed(limit int, latestTime int64) ([]domain.Video, error)
 	}
 	return videos, nil
 }
+
+func (dao *FeedDao) SaveVideo(video domain.Video) error {
+	return dao.db.Create(&video).Error
+}
+
+func (dao *FeedDao) GetUserPublishList(id int64) ([]domain.Video, error) {
+	var videos []domain.Video
+	err := dao.db.Where("author_id = ?", id).Find(&videos).Error
+	return videos, err
+}

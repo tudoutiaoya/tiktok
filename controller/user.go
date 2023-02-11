@@ -75,20 +75,20 @@ func (c *UserController) CurrentUser(context *gin.Context) {
 		response.SendErrResponse(context, errno.ParamIllegal)
 		return
 	}
-	// 验证token
-	userID, _ := strconv.ParseInt(currentUser.UserID, 10, 64)
-	token := currentUser.Token
-	parseToken, err := jwtutil.ParseToken(token)
-	if err != nil {
-		response.SendErrResponse(context, errno.TokenIllegal)
-		return
-	}
+	// 验证token中的id和用户的id是否相等
+	tokenUserId, _ := context.Get("id")
+	userID := currentUser.UserID
 	// 签名不一样
-	if parseToken.ID != userID {
+	if tokenUserId != userID {
 		response.SendErrResponse(context, errno.TokenIllegal)
 		return
 	}
-	userVo, err := c.userService.GetCurrentUser(userID)
+	id, err := strconv.ParseInt(userID, 10, 64)
+	if err != nil {
+		response.SendErrResponse(context, errno.ParamIllegal)
+		return
+	}
+	userVo, err := c.userService.GetCurrentUser(id)
 	if err != nil {
 		response.SendErrResponse(context, errno.HandleServiceErrRes(err))
 	}

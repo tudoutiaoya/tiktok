@@ -12,8 +12,19 @@ type UserParam struct {
 	Password string `form:"password" binding:"required"` // 密码，最长32个字符
 }
 
-// CurrentUserParam 获取当前用户信息参数
+// CurrentUserParam 获取当前用户信息参数 视频发布列表参数
 type CurrentUserParam struct {
 	UserID string `form:"user_id" binding:"required"` // 用户id
 	Token  string `form:"token" binding:"required"`   // 用户鉴权token
+}
+
+// PublishParam 视频投稿
+type PublishParam struct {
+	Token string `form:"token" binding:"required"` // 用户鉴权token
+	Title string `form:"title" binding:"required"` // 视频标题
+}
+
+// TokenParam JWT中间件判断token是否合法
+type TokenParam struct {
+	Token string `form:"token" binding:"required"`
 }

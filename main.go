@@ -8,6 +8,7 @@ import (
 	"tiktok/dao"
 	"tiktok/service"
 	"tiktok/util/jwtutil"
+	"tiktok/util/qiniuutil"
 )
 
 func main() {
@@ -42,4 +43,6 @@ func initMVC() *controller.Controllers {
 func initOther() {
 	// 初始化jwt
 	jwtutil.InitJwtSecretKey(configuration)
+	// 初始化七牛云
+	qiniuutil.InitQiniu(configuration)
 }

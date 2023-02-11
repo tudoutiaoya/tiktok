@@ -3,6 +3,7 @@ package response
 import (
 	"github.com/gin-gonic/gin"
 	"net/http"
+	"tiktok/common/errno"
 )
 
 type Response struct {
@@ -16,8 +17,8 @@ var SuccessResponse = Response{
 }
 
 // 返回前端错误信息
-func SendErrResponse(context *gin.Context, response interface{}) {
-	context.JSON(http.StatusOK, response)
+func SendErrResponse(context *gin.Context, errResponse *errno.ErrResponse) {
+	context.JSON(http.StatusOK, errResponse)
 	context.Abort()
 }
 

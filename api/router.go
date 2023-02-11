@@ -4,6 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"tiktok/controller"
+	"tiktok/controller/middleware"
 	"tiktok/controller/response"
 )
 
@@ -22,21 +23,11 @@ func InitRouter(r *gin.Engine, web *controller.Controllers) {
 	// 用户登录
 	apiRouter.POST("/user/login/", web.UserController.Login)
 
-	apiRouter.POST("/publish/action/", func(c *gin.Context) {
-		c.JSON(http.StatusOK, response.Response{
-			StatusCode: 0,
-		})
-	})
+	// 视频投稿
+	apiRouter.POST("/publish/action/", middleware.JWTAuthMiddleware(), web.PublishController.Publish)
 
-	// 打开app请求这个
-	apiRouter.GET("/publish/list/", func(c *gin.Context) {
-		c.JSON(http.StatusOK, response.VideoListResponse{
-			Response: response.Response{
-				StatusCode: 0,
-			},
-			VideoList: []response.VideoVo{},
-		})
-	})
+	// 发布列表
+	apiRouter.GET("/publish/list/", middleware.JWTAuthMiddleware(), web.PublishController.PublishList)
 
 	// extra apis - I
 	apiRouter.POST("/favorite/action/", func(c *gin.Context) {

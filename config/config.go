@@ -10,6 +10,7 @@ var v *viper.Viper
 type Configuration struct {
 	DatabaseSettings
 	JWTSettings
+	QiniuSettings
 }
 
 // DatabaseSettings 数据库配置
@@ -23,6 +24,14 @@ type DatabaseSettings struct {
 // JWT配置
 type JWTSettings struct {
 	SecretKey string
+}
+
+type QiniuSettings struct {
+	AccessKey string
+	SecretKey string
+	Bucket    string
+	Prefix    string
+	VideoPath string
 }
 
 func NewConfiguration(configFile string) (configuration *Configuration, err error) {
