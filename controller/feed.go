@@ -18,37 +18,38 @@ func NewFeedController(feedService *service.FeedService) *FeedController {
 	return &FeedController{feedService: feedService}
 }
 
-func (c *FeedController) GetFeed(g *gin.Context) {
+func (c *FeedController) GetFeed(context *gin.Context) {
 	var feedParam param.FeedParam
 	var latestTime int64
 	var token string
-	latest_time := g.Query("latest_time")
-	token = g.Query("token")
+	if err := context.ShouldBind(&feedParam); err != nil {
+		response.SendErrResponse(context, errno.ParamIllegal)
+	}
 
 	// 校验参数合法性 为 "" 转化出错
 	// 参数不合法 直接返回， 还存在一种为 0
-	if len(latest_time) != 0 {
-		latestTimeInt64, err := strconv.ParseInt(latest_time, 10, 64)
+	if len(feedParam.LatestTime) != 0 {
+		latestTimeInt64, err := strconv.ParseInt(feedParam.LatestTime, 10, 64)
 		if err != nil {
-			response.SendResponse(g, errno.ParamIllegalErr)
+			response.SendErrResponse(context, errno.ParamIllegal)
 			return
 		}
 		latestTime = latestTimeInt64
 	}
 
 	// 不传或者为0，为当前时间
-	if latest_time == "" || latestTime == 0 {
+	if feedParam.LatestTime == "" || latestTime == 0 {
 		latestTime = time.Now().UnixMilli()
 	}
 
-	feedParam.LatestTime = latestTime
-	feedParam.Token = token
+	token = feedParam.Token
 
 	// 查询Feed流
-	result, err := c.feedService.GetFeed(feedParam)
+	result, err := c.feedService.GetFeed(latestTime, token)
 	if err != nil {
-		response.SendResponse(g, errno.HandleServiceErrRes(err))
+		response.SendErrResponse(context, errno.HandleServiceErrRes(err))
+		return
 	}
-
-	response.SendResponse(g, result)
+	// 成功响应
+	response.SendSuccessResponse(context, result)
 }

@@ -3,3 +3,6 @@ DatabaseSettings:
   DatabaseName: "tiktok"
   Username: "root"
   Password: "123456"
+
+JWTSettings:
+  SecretKey: "wokanguoliuxingzhuiruodimian"

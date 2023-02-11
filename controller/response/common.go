@@ -10,6 +10,22 @@ type Response struct {
 	StatusMsg  string `json:"status_msg,omitempty"`
 }
 
+var SuccessResponse = Response{
+	StatusCode: 0,
+	StatusMsg:  "success",
+}
+
+// 返回前端错误信息
+func SendErrResponse(context *gin.Context, response interface{}) {
+	context.JSON(http.StatusOK, response)
+	context.Abort()
+}
+
+// 成功返回消息
+func SendSuccessResponse(context *gin.Context, response interface{}) {
+	context.JSON(http.StatusOK, response)
+}
+
 type VideoVo struct {
 	ID            int64  `json:"id,omitempty"`
 	Author        UserVo `json:"author"`
@@ -18,16 +34,13 @@ type VideoVo struct {
 	FavoriteCount int64  `json:"favorite_count,omitempty"`
 	CommentCount  int64  `json:"comment_count,omitempty"`
 	IsFavorite    bool   `json:"is_favorite,omitempty"`
+	Title         string `json:"title,omitempty"`
 }
 
 type UserVo struct {
 	ID            int64  `json:"id,omitempty"`
-	Name          string `json:"name,omitempty"`
+	UserName      string `json:"name,omitempty"`
 	FollowCount   int64  `json:"follow_count,omitempty"`
 	FollowerCount int64  `json:"follower_count,omitempty"`
 	IsFollow      bool   `json:"is_follow,omitempty"`
-}
-
-func SendResponse(g *gin.Context, response any) {
-	g.JSON(http.StatusOK, response)
 }

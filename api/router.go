@@ -3,42 +3,31 @@ package api
 import (
 	"github.com/gin-gonic/gin"
 	"net/http"
-	"tiktok/config"
 	"tiktok/controller"
 	"tiktok/controller/response"
-	"tiktok/dao"
-	"tiktok/service"
 )
 
-func InitRouter(r *gin.Engine) {
-	// 初始化其他配置
-	web := initOther()
+func InitRouter(r *gin.Engine, web *controller.Controllers) {
 	apiRouter := r.Group("/douyin")
 	// 基础接口
+	// 视频流
 	apiRouter.GET("/feed", web.FeedController.GetFeed)
 
-	apiRouter.GET("/create", web.UserController.Create)
+	// 获取登录用户信息
+	apiRouter.GET("/user/", web.UserController.CurrentUser)
 
-	apiRouter.GET("/user/", func(c *gin.Context) {
-		c.JSON(http.StatusOK, response.Response{
-			StatusCode: 0,
-		})
-	})
-	apiRouter.POST("/user/register/", func(c *gin.Context) {
-		c.JSON(http.StatusOK, response.Response{
-			StatusCode: 0,
-		})
-	})
-	apiRouter.POST("/user/login/", func(c *gin.Context) {
-		c.JSON(http.StatusOK, response.Response{
-			StatusCode: 0,
-		})
-	})
+	// 用户注册
+	apiRouter.POST("/user/register/", web.UserController.Register)
+
+	// 用户登录
+	apiRouter.POST("/user/login/", web.UserController.Login)
+
 	apiRouter.POST("/publish/action/", func(c *gin.Context) {
 		c.JSON(http.StatusOK, response.Response{
 			StatusCode: 0,
 		})
 	})
+
 	// 打开app请求这个
 	apiRouter.GET("/publish/list/", func(c *gin.Context) {
 		c.JSON(http.StatusOK, response.VideoListResponse{
@@ -109,17 +98,9 @@ func InitRouter(r *gin.Engine) {
 
 }
 
-func initOther() *controller.Controllers {
-	configuration := config.InitConfig()
-	databases := dao.InitDao(configuration)
-	services := service.InitService(databases)
-	controllers := controller.InitController(services)
-	return controllers
-}
-
 var DemoUser = response.UserVo{
 	ID:            1,
-	Name:          "TestUser",
+	UserName:      "TestUser",
 	FollowCount:   0,
 	FollowerCount: 0,
 	IsFollow:      false,

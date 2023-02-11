@@ -2,25 +2,25 @@ package service
 
 import (
 	"github.com/jinzhu/copier"
-	"tiktok/controller/param"
 	"tiktok/controller/response"
 	"tiktok/dao"
 	"time"
 )
 
-var LIMIT = 2
+// LIMIT 视频限制条数
+const LIMIT = 2
 
 type FeedService struct {
-	feedDao *dao.FeedDao
+	feedDao     *dao.FeedDao
+	userDao     *dao.UserDao
+	userService *UserService
 }
 
-func NewFeedService(feedDao *dao.FeedDao) *FeedService {
-	return &FeedService{feedDao: feedDao}
+func NewFeedService(feedDao *dao.FeedDao, userDao *dao.UserDao, userService *UserService) *FeedService {
+	return &FeedService{feedDao: feedDao, userDao: userDao, userService: userService}
 }
 
-func (s *FeedService) GetFeed(feedParam param.FeedParam) (result *response.FeedResponse, err error) {
-
-	latestTime := feedParam.LatestTime
+func (s *FeedService) GetFeed(latestTime int64, token string) (*response.FeedResponse, error) {
 	videos, err := s.feedDao.GetFeed(LIMIT, latestTime)
 	if err != nil {
 		return nil, err
@@ -37,22 +37,33 @@ func (s *FeedService) GetFeed(feedParam param.FeedParam) (result *response.FeedR
 	for _, video := range videos {
 		videoVo := response.VideoVo{}
 		copier.Copy(&videoVo, &video)
-		// 查询作者 之后添加
-		// 是否喜欢 之后添加
-		videoVo.Author = response.UserVo{
-			ID:            1,
-			Name:          "TestUser",
-			FollowCount:   0,
-			FollowerCount: 0,
-			IsFollow:      false,
+		// 添加视频作者信息
+		user, _ := s.userDao.GetUserById(video.AuthorID)
+		var userVo = response.UserVo{}
+		copier.Copy(&userVo, &user)
+		videoVo.Author = userVo
+		// 添加是否喜欢
+		isLogin, _ := s.userService.IsLogin(token)
+		if isLogin {
+			// TODO 等点赞接口
+			videoVo.IsFavorite = true
 		}
-
 		videoVos = append(videoVos, videoVo)
 	}
 
-	res := &response.FeedResponse{
+	result := &response.FeedResponse{
 		VideoList: videoVos,
 		NextTime:  videos[len(videos)-1].UpdatedAt.UnixMilli(),
 	}
-	return res, nil
+	return result, nil
+}
+
+func (s *FeedService) GetUserVoByVideoId(id int64) (*response.UserVo, error) {
+	user, err := s.userDao.GetUserByVideoId(id)
+	if err != nil {
+		return nil, err
+	}
+	var userVo = response.UserVo{}
+	copier.Copy(&user, &userVo)
+	return &userVo, nil
 }

@@ -8,8 +8,10 @@ type Services struct {
 }
 
 func InitService(databases *dao.Databases) *Services {
+	userService := NewUserService(databases.UseDao)
+	feedService := NewFeedService(databases.FeedDao, databases.UseDao, userService)
 	return &Services{
-		UserService: NewUserService(databases.UseDao),
-		FeedService: NewFeedService(databases.FeedDao),
+		UserService: userService,
+		FeedService: feedService,
 	}
 }

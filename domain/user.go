@@ -4,6 +4,12 @@ import "gorm.io/gorm"
 
 type User struct {
 	gorm.Model
-	UserName string `gorm:"column:username"`
-	PassWord string `gorm:"column:password"`
+	UserName      string `gorm:"column:username;type:varchar(255);not null"`
+	PassWord      string `gorm:"column:password;type:varchar(255);not null"`
+	FollowCount   int64  `gorm:"default:0"`
+	FollowerCount int64  `gorm:"default:0"`
+}
+
+func (u User) TableName() string {
+	return "user"
 }

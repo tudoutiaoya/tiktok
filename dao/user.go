@@ -10,16 +10,36 @@ type UserDao struct {
 }
 
 func NewUserDao(db *gorm.DB) *UserDao {
-	db.AutoMigrate(&domain.User{})
 	return &UserDao{
 		db: db,
 	}
 }
 
-func (u *UserDao) Create() error {
-	tx := u.db.Create(&domain.User{UserName: "haha", PassWord: "123456"})
-	if tx.Error != nil {
-		return tx.Error
-	}
-	return nil
+func (u *UserDao) SelectCount(username string) int64 {
+	var count int64
+	u.db.Model(&domain.User{}).Where("username = ?", username).Count(&count)
+	return count
+}
+
+func (u *UserDao) CreatUse(user *domain.User) error {
+	return u.db.Create(user).Error
+}
+
+func (u *UserDao) GetUserByUserName(username string) (domain.User, error) {
+	var user domain.User
+	err := u.db.Where("username = ?", username).Find(&user).Error
+	return user, err
+}
+
+func (u *UserDao) GetUserById(id int64) (domain.User, error) {
+	var user domain.User
+	err := u.db.Where("id = ?", id).Find(&user).Error
+	return user, err
+}
+
+func (u *UserDao) GetUserByVideoId(id int64) (domain.User, error) {
+	var user domain.User
+
+	err := u.db.Where("id = ?").Find(&user).Error
+	return user, err
 }

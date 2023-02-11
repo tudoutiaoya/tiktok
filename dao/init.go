@@ -23,7 +23,7 @@ func InitDao(config *config.Configuration) *Databases {
 		panic(fmt.Sprintf("不能连接到数据库 : %s", err.Error()))
 	}
 	// 与数据库对应
-	err = db.AutoMigrate(&domain.Video{})
+	err = db.AutoMigrate(&domain.Video{}, &domain.User{})
 	if err != nil {
 		panic(fmt.Sprintf("domain转移数据库失败 : %s", err.Error()))
 	}

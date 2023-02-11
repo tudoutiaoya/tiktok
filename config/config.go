@@ -9,6 +9,7 @@ var v *viper.Viper
 
 type Configuration struct {
 	DatabaseSettings
+	JWTSettings
 }
 
 // DatabaseSettings 数据库配置
@@ -17,6 +18,11 @@ type DatabaseSettings struct {
 	DatabaseName string
 	Username     string
 	Password     string
+}
+
+// JWT配置
+type JWTSettings struct {
+	SecretKey string
 }
 
 func NewConfiguration(configFile string) (configuration *Configuration, err error) {
