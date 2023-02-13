@@ -2,6 +2,7 @@ package middleware
 
 import (
 	"github.com/gin-gonic/gin"
+	"strconv"
 	"tiktok/common/errno"
 	"tiktok/controller/param"
 	"tiktok/controller/response"
@@ -21,8 +22,16 @@ func JWTAuthMiddleware() func(c *gin.Context) {
 		}
 		parseToken, err := jwtutil.ParseToken(tokenParam.Token)
 		if err != nil {
-			response.SendErrResponse(c, errno.NoLoginErr)
+			response.SendErrResponse(c, errno.TokenIllegal)
 			return
+		}
+		userID := tokenParam.UserID
+		if userID != "" {
+			// 判断userId 和 jwt中的userid是否相等
+			if tokenParam.UserID != strconv.FormatInt(parseToken.ID, 10) {
+				response.SendErrResponse(c, errno.TokenIllegal)
+				return
+			}
 		}
 		id := parseToken.ID
 		// 将当前请求的id信息保存到请求的上下文c上

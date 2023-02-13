@@ -14,3 +14,9 @@ QiniuSettings:
   Bucket: my-tiktok
   Prefix: http://tiktok.tudoutiao.pro/
   VideoPath: video/
+
+RedisSettings:
+  Host: 43.143.224.79
+  Port: 6379
+  PassWord: 123456
+  DB: 0

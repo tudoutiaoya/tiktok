@@ -11,10 +11,10 @@ import (
 )
 
 type FeedController struct {
-	feedService *service.FeedService
+	feedService *service.VideoService
 }
 
-func NewFeedController(feedService *service.FeedService) *FeedController {
+func NewFeedController(feedService *service.VideoService) *FeedController {
 	return &FeedController{feedService: feedService}
 }
 
@@ -24,6 +24,7 @@ func (c *FeedController) GetFeed(context *gin.Context) {
 	var token string
 	if err := context.ShouldBind(&feedParam); err != nil {
 		response.SendErrResponse(context, errno.ParamIllegal)
+		return
 	}
 
 	// 校验参数合法性 为 "" 转化出错

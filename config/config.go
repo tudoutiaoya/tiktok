@@ -11,6 +11,7 @@ type Configuration struct {
 	DatabaseSettings
 	JWTSettings
 	QiniuSettings
+	RedisSettings
 }
 
 // DatabaseSettings 数据库配置
@@ -32,6 +33,13 @@ type QiniuSettings struct {
 	Bucket    string
 	Prefix    string
 	VideoPath string
+}
+
+type RedisSettings struct {
+	Host     string
+	Port     string
+	DB       int
+	PassWord string
 }
 
 func NewConfiguration(configFile string) (configuration *Configuration, err error) {

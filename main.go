@@ -6,6 +6,7 @@ import (
 	"tiktok/config"
 	"tiktok/controller"
 	"tiktok/dao"
+	"tiktok/mredis"
 	"tiktok/service"
 	"tiktok/util/jwtutil"
 	"tiktok/util/qiniuutil"
@@ -45,4 +46,10 @@ func initOther() {
 	jwtutil.InitJwtSecretKey(configuration)
 	// 初始化七牛云
 	qiniuutil.InitQiniu(configuration)
+	// 初始化Redis
+	err := mredis.InitClient(configuration)
+	if err != nil {
+		//redis连接错误
+		panic(err)
+	}
 }

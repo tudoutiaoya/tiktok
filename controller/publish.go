@@ -2,20 +2,18 @@ package controller
 
 import (
 	"github.com/gin-gonic/gin"
-	"strconv"
 	"tiktok/common/errno"
 	"tiktok/controller/param"
 	"tiktok/controller/response"
 	"tiktok/service"
-	"tiktok/util/jwtutil"
 )
 
 type PublishController struct {
-	*service.FeedService
+	*service.VideoService
 }
 
-func NewPublishController(feedService *service.FeedService) *PublishController {
-	return &PublishController{FeedService: feedService}
+func NewPublishController(feedService *service.VideoService) *PublishController {
+	return &PublishController{VideoService: feedService}
 }
 
 // Publish 视频发稿
@@ -28,7 +26,7 @@ func (c *PublishController) Publish(context *gin.Context) {
 	}
 	file, _ := context.FormFile("data")
 	userId, _ := context.Get("id")
-	err := c.FeedService.SaveVideo(userId.(int64), publishParam.Title, file)
+	err := c.VideoService.SaveVideo(userId.(int64), publishParam.Title, file)
 	if err != nil {
 		response.SendErrResponse(context, errno.HandleServiceErrRes(err))
 	}
@@ -41,20 +39,16 @@ func (c *PublishController) PublishList(context *gin.Context) {
 		response.SendErrResponse(context, errno.ParamIllegal)
 		return
 	}
-	// 验证token
-	userID, _ := strconv.ParseInt(currentUser.UserID, 10, 64)
-	token := currentUser.Token
-	parseToken, err := jwtutil.ParseToken(token)
-	if err != nil {
-		response.SendErrResponse(context, errno.TokenIllegal)
-		return
-	}
+	// 验证token中的id和用户的id是否相等
+	tokenUserId, _ := context.Get("id")
+	userID := currentUser.UserID
 	// 签名不一样
-	if parseToken.ID != userID {
+	if tokenUserId != userID {
 		response.SendErrResponse(context, errno.TokenIllegal)
 		return
 	}
-	videoVos, err := c.FeedService.GetUserPublishList(userID)
+
+	videoVos, err := c.VideoService.GetUserPublishList(userID)
 	if err != nil {
 		response.SendErrResponse(context, errno.HandleServiceErrRes(err))
 		return

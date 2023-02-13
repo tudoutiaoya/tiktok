@@ -26,3 +26,14 @@ type UserResponse struct {
 	Response
 	User UserVo `json:"user"`
 }
+
+// CommentActionResponse 评论
+type CommentActionResponse struct {
+	Response
+	CommentVo CommentVo `json:"comment,omitempty"`
+}
+
+type CommentListResponse struct {
+	Response
+	CommentList []CommentVo `json:"comment_list,omitempty"`
+}

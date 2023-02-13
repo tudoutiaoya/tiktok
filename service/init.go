@@ -3,15 +3,18 @@ package service
 import "tiktok/dao"
 
 type Services struct {
-	UserService *UserService
-	FeedService *FeedService
+	*UserService
+	*VideoService
+	*CommentService
 }
 
 func InitService(databases *dao.Databases) *Services {
-	userService := NewUserService(databases.UseDao)
-	feedService := NewFeedService(databases.FeedDao, databases.UseDao, userService)
+	userService := NewUserService(databases.UserDao)
+	videoService := NewVideoService(databases.VideoDao, databases.UserDao, userService)
+	commentService := NewCommentService(databases.CommentDao, userService)
 	return &Services{
-		UserService: userService,
-		FeedService: feedService,
+		UserService:    userService,
+		VideoService:   videoService,
+		CommentService: commentService,
 	}
 }

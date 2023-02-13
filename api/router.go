@@ -15,7 +15,7 @@ func InitRouter(r *gin.Engine, web *controller.Controllers) {
 	apiRouter.GET("/feed", web.FeedController.GetFeed)
 
 	// 获取登录用户信息
-	apiRouter.GET("/user/", web.UserController.CurrentUser)
+	apiRouter.GET("/user/", middleware.JWTAuthMiddleware(), web.UserController.CurrentUser)
 
 	// 用户注册
 	apiRouter.POST("/user/register/", web.UserController.Register)
@@ -29,31 +29,17 @@ func InitRouter(r *gin.Engine, web *controller.Controllers) {
 	// 发布列表
 	apiRouter.GET("/publish/list/", middleware.JWTAuthMiddleware(), web.PublishController.PublishList)
 
-	// extra apis - I
-	apiRouter.POST("/favorite/action/", func(c *gin.Context) {
-		c.JSON(http.StatusOK, response.Response{
-			StatusCode: 0,
-		})
-	})
-	// 打开app请求这个
-	apiRouter.GET("/favorite/list/", func(c *gin.Context) {
-		c.JSON(http.StatusOK, response.VideoListResponse{
-			Response: response.Response{
-				StatusCode: 0,
-			},
-			VideoList: []response.VideoVo{},
-		})
-	})
-	apiRouter.POST("/comment/action/", func(c *gin.Context) {
-		c.JSON(http.StatusOK, response.Response{
-			StatusCode: 0,
-		})
-	})
-	apiRouter.GET("/comment/list/", func(c *gin.Context) {
-		c.JSON(http.StatusOK, response.Response{
-			StatusCode: 0,
-		})
-	})
+	// 点赞/取消
+	apiRouter.POST("/favorite/action/", middleware.JWTAuthMiddleware(), web.FavoriteController.Action)
+
+	// 喜欢列表
+	apiRouter.GET("/favorite/list/", middleware.JWTAuthMiddleware(), web.FavoriteController.LikeList)
+
+	// 评论
+	apiRouter.POST("/comment/action/", middleware.JWTAuthMiddleware(), web.CommentController.CommentAction)
+
+	// 评论列表
+	apiRouter.GET("/comment/list/", web.CommentController.CommentList)
 
 	//extra apis - II
 	apiRouter.POST("/relation/action/", func(c *gin.Context) {

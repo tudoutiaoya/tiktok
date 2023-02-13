@@ -14,7 +14,7 @@ type UserParam struct {
 
 // CurrentUserParam 获取当前用户信息参数 视频发布列表参数
 type CurrentUserParam struct {
-	UserID string `form:"user_id" binding:"required"` // 用户id
+	UserID int64  `form:"user_id" binding:"required"` // 用户id
 	Token  string `form:"token" binding:"required"`   // 用户鉴权token
 }
 
@@ -24,7 +24,30 @@ type PublishParam struct {
 	Title string `form:"title" binding:"required"` // 视频标题
 }
 
+// FavoriteActionParam 点赞/取消
+type FavoriteActionParam struct {
+	Token      string `form:"token" binding:"required"`
+	VideoID    int64  `form:"video_id" binding:"required"`
+	ActionType int64  `form:"action_type" binding:"required,oneof=1 2"`
+}
+
+// CommentActionParam 评论操作
+type CommentActionParam struct {
+	Token       string `form:"token" binding:"required"`                 // 用户鉴权token
+	VideoID     int64  `form:"video_id" binding:"required"`              // 视频id
+	ActionType  int    `form:"action_type" binding:"required,oneof=1 2"` // 1-发表评论 2-删除评论
+	CommentText string `form:"comment_text"`                             // 评论内容 action_type=1时候用
+	CommentID   string `form:"comment_id"`                               // 要删除的评论id,在action_type=2时使用
+}
+
+// 评论列表
+type CommentListParam struct {
+	Token   string `form:"token""`                      // 用户鉴权token
+	VideoID int64  `form:"video_id" binding:"required"` // 视频id
+}
+
 // TokenParam JWT中间件判断token是否合法
 type TokenParam struct {
-	Token string `form:"token" binding:"required"`
+	UserID string `form:"user_id"` // 用户id
+	Token  string `form:"token" binding:"required"`
 }

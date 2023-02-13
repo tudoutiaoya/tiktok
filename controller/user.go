@@ -2,7 +2,6 @@ package controller
 
 import (
 	"github.com/gin-gonic/gin"
-	"strconv"
 	"tiktok/common/errno"
 	"tiktok/controller/param"
 	"tiktok/controller/response"
@@ -75,20 +74,17 @@ func (c *UserController) CurrentUser(context *gin.Context) {
 		response.SendErrResponse(context, errno.ParamIllegal)
 		return
 	}
-	// 验证token中的id和用户的id是否相等
+
 	tokenUserId, _ := context.Get("id")
 	userID := currentUser.UserID
+
 	// 签名不一样
 	if tokenUserId != userID {
 		response.SendErrResponse(context, errno.TokenIllegal)
 		return
 	}
-	id, err := strconv.ParseInt(userID, 10, 64)
-	if err != nil {
-		response.SendErrResponse(context, errno.ParamIllegal)
-		return
-	}
-	userVo, err := c.userService.GetCurrentUser(id)
+
+	userVo, err := c.userService.GetCurrentUser(userID)
 	if err != nil {
 		response.SendErrResponse(context, errno.HandleServiceErrRes(err))
 	}

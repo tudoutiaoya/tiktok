@@ -39,7 +39,6 @@ func (u *UserDao) GetUserById(id int64) (domain.User, error) {
 
 func (u *UserDao) GetUserByVideoId(id int64) (domain.User, error) {
 	var user domain.User
-
 	err := u.db.Where("id = ?").Find(&user).Error
 	return user, err
 }

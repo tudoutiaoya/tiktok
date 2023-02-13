@@ -45,3 +45,10 @@ type UserVo struct {
 	FollowerCount int64  `json:"follower_count,omitempty"`
 	IsFollow      bool   `json:"is_follow,omitempty"`
 }
+
+type CommentVo struct {
+	ID        int64  `json:"id,omitempty"`
+	UserVo    UserVo `json:"user"`
+	Content   string `json:"content,omitempty"`
+	CreatedAt string `json:"create_date,omitempty"`
+}
