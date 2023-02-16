@@ -34,7 +34,7 @@ func (c FavoriteController) LikeList(context *gin.Context) {
 		response.SendErrResponse(context, errno.ParamIllegal)
 		return
 	}
-	result, err := c.videoService.LikeList(currentUserParam.UserID)
+	result, err := c.videoService.LikeList(currentUserParam.UserID, currentUserParam.Token)
 	if err != nil {
 		response.SendErrResponse(context, errno.HandleServiceErrRes(err))
 		return

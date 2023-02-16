@@ -33,7 +33,20 @@ type CommentActionResponse struct {
 	CommentVo CommentVo `json:"comment,omitempty"`
 }
 
+// CommentListResponse 评论列表
 type CommentListResponse struct {
 	Response
 	CommentList []CommentVo `json:"comment_list,omitempty"`
+}
+
+// UserListResponse 关注列表
+type UserListResponse struct {
+	Response
+	UserList []UserVo `json:"user_list"`
+}
+
+// MessageChatResponse 消息列表
+type MessageChatResponse struct {
+	Response
+	MessageList []MessageVo `json:"message_list"`
 }

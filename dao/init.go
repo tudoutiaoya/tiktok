@@ -14,6 +14,8 @@ type Databases struct {
 	*UserDao
 	*VideoDao
 	*CommentDao
+	*RelationDao
+	*MessageDao
 }
 
 func InitDao(config *config.Configuration) *Databases {
@@ -24,13 +26,15 @@ func InitDao(config *config.Configuration) *Databases {
 		panic(fmt.Sprintf("不能连接到数据库 : %s", err.Error()))
 	}
 	// 与数据库对应
-	err = db.AutoMigrate(&domain.Video{}, &domain.User{}, &domain.ULikeV{}, &domain.Comment{})
+	err = db.AutoMigrate(&domain.Video{}, &domain.User{}, &domain.ULikeV{}, &domain.Comment{}, &domain.Relation{}, &domain.Message{})
 	if err != nil {
 		panic(fmt.Sprintf("domain转移数据库失败 : %s", err.Error()))
 	}
 	return &Databases{
-		UserDao:    NewUserDao(db),
-		VideoDao:   NewVideoDao(db),
-		CommentDao: NewCommentDao(db),
+		UserDao:     NewUserDao(db),
+		VideoDao:    NewVideoDao(db),
+		CommentDao:  NewCommentDao(db),
+		RelationDao: NewRelationDao(db),
+		MessageDao:  NewMessageDao(db),
 	}
 }

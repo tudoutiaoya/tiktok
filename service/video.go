@@ -8,6 +8,7 @@ import (
 	"tiktok/controller/response"
 	"tiktok/dao"
 	"tiktok/domain"
+	"tiktok/util/jwtutil"
 	"tiktok/util/qiniuutil"
 	"time"
 )
@@ -25,10 +26,11 @@ type VideoService struct {
 	videoDao    *dao.VideoDao
 	userDao     *dao.UserDao
 	userService *UserService
+	relationDao *dao.RelationDao
 }
 
-func NewVideoService(videoDao *dao.VideoDao, userDao *dao.UserDao, userService *UserService) *VideoService {
-	return &VideoService{videoDao: videoDao, userDao: userDao, userService: userService}
+func NewVideoService(videoDao *dao.VideoDao, userDao *dao.UserDao, userService *UserService, relationDao *dao.RelationDao) *VideoService {
+	return &VideoService{videoDao: videoDao, userDao: userDao, userService: userService, relationDao: relationDao}
 }
 
 // GetFeed 获取视频流
@@ -61,16 +63,21 @@ func (s *VideoService) videosToVideoVos(videos []domain.Video, knownLogin bool, 
 		videoVo := response.VideoVo{}
 		copier.Copy(&videoVo, &video)
 		// 添加视频作者信息
-		user, _ := s.userDao.GetUserById(video.AuthorID)
+		author, _ := s.userDao.GetUserById(video.AuthorID)
 		var userVo = response.UserVo{}
-		copier.Copy(&userVo, &user)
+		copier.Copy(&userVo, &author)
 		videoVo.Author = userVo
+		// 添加是否关注
 		// 添加是否喜欢
 		isLogin, _ := s.userService.IsLogin(token)
 		if isLogin || knownLogin {
 			// TODO 等点赞接口
-			isLike, _ := s.videoDao.IsLike(int64(user.ID), int64(video.ID))
+			parseToken, _ := jwtutil.ParseToken(token)
+			userID := parseToken.ID
+			isLike, _ := s.videoDao.IsLike(int64(author.ID), int64(video.ID))
 			videoVo.IsFavorite = isLike
+			isHas, _ := s.relationDao.IsHas(userID, int64(author.ID))
+			videoVo.Author.IsFollow = isHas
 		}
 		videoVos = append(videoVos, videoVo)
 	}
@@ -78,8 +85,8 @@ func (s *VideoService) videosToVideoVos(videos []domain.Video, knownLogin bool, 
 }
 
 // 已经登录--视频列表封装为响应对象，包含作者信息
-func (s *VideoService) videosToVideoVosHasLogin(videos []domain.Video) []response.VideoVo {
-	return s.videosToVideoVos(videos, true, "")
+func (s *VideoService) videosToVideoVosHasLogin(videos []domain.Video, token string) []response.VideoVo {
+	return s.videosToVideoVos(videos, true, token)
 }
 
 // 不知道是否登录--视频列表封装为响应对象，包含作者信息
@@ -164,7 +171,7 @@ func (s *VideoService) Action(userID int64, videoID int64, actionType int64) err
 }
 
 // LikeList 喜欢视频列表
-func (s *VideoService) LikeList(userID int64) (*response.VideoListResponse, error) {
+func (s *VideoService) LikeList(userID int64, token string) (*response.VideoListResponse, error) {
 	videoIDs, err := s.videoDao.LikeListVideoIDs(userID)
 	if err != nil {
 		log.Println(err)
@@ -174,7 +181,7 @@ func (s *VideoService) LikeList(userID int64) (*response.VideoListResponse, erro
 	if err != nil {
 		return nil, errors.New("查询失败")
 	}
-	videoVos := s.videosToVideoVosHasLogin(videos)
+	videoVos := s.videosToVideoVosHasLogin(videos, token)
 	result := &response.VideoListResponse{
 		Response:  response.SuccessResponse,
 		VideoList: videoVos,

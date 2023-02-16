@@ -2,10 +2,8 @@ package api
 
 import (
 	"github.com/gin-gonic/gin"
-	"net/http"
 	"tiktok/controller"
 	"tiktok/controller/middleware"
-	"tiktok/controller/response"
 )
 
 func InitRouter(r *gin.Engine, web *controller.Controllers) {
@@ -41,120 +39,22 @@ func InitRouter(r *gin.Engine, web *controller.Controllers) {
 	// 评论列表
 	apiRouter.GET("/comment/list/", web.CommentController.CommentList)
 
-	//extra apis - II
-	apiRouter.POST("/relation/action/", func(c *gin.Context) {
-		c.JSON(http.StatusOK, response.Response{
-			StatusCode: 0,
-		})
-	})
-	apiRouter.GET("/relation/follow/list/", func(c *gin.Context) {
-		c.JSON(http.StatusOK, response.Response{
-			StatusCode: 0,
-		})
-	})
-	apiRouter.GET("/relation/follower/list/", func(c *gin.Context) {
-		c.JSON(http.StatusOK, response.Response{
-			StatusCode: 0,
-		})
-	})
-	apiRouter.GET("/relation/friend/list/", func(c *gin.Context) {
-		c.JSON(http.StatusOK, response.Response{
-			StatusCode: 0,
-		})
-	})
-	apiRouter.GET("/message/chat/", func(c *gin.Context) {
-		c.JSON(http.StatusOK, response.Response{
-			StatusCode: 0,
-		})
-	})
-	apiRouter.POST("/message/action/", func(c *gin.Context) {
-		c.JSON(http.StatusOK, response.Response{
-			StatusCode: 0,
-		})
-	})
+	// 关注操作
+	apiRouter.POST("/relation/action/", middleware.JWTAuthMiddleware(), web.RelationController.RelationAction)
 
-}
+	// 关注列表
+	apiRouter.GET("/relation/follow/list/", middleware.JWTAuthMiddleware(), web.RelationController.FollowList)
 
-var DemoUser = response.UserVo{
-	ID:            1,
-	UserName:      "TestUser",
-	FollowCount:   0,
-	FollowerCount: 0,
-	IsFollow:      false,
-}
+	// 粉丝列表
+	apiRouter.GET("/relation/follower/list/", middleware.JWTAuthMiddleware(), web.RelationController.FollowerList)
 
-var DemoVideos = []response.VideoVo{
-	{
-		ID:            1,
-		Author:        DemoUser,
-		PlayUrl:       "https://www.w3schools.com/html/movie.mp4",
-		CoverUrl:      "https://cdn.pixabay.com/photo/2016/03/27/18/10/bear-1283347_1280.jpg",
-		FavoriteCount: 0,
-		CommentCount:  0,
-		IsFavorite:    false,
-	}, {
-		ID:            2,
-		Author:        DemoUser,
-		PlayUrl:       "http://tiktok.tudoutiao.pro/video/13cdca069e040698246df2346541e656.mp4",
-		CoverUrl:      "https://cdn.pixabay.com/photo/2016/03/27/18/10/bear-1283347_1280.jpg",
-		FavoriteCount: 0,
-		CommentCount:  0,
-		IsFavorite:    false,
-	}, {
-		ID:            3,
-		Author:        DemoUser,
-		PlayUrl:       "http://tiktok.tudoutiao.pro/video/20bab060d3a6b70dfbbc4dbab869efe6.mp4",
-		CoverUrl:      "https://cdn.pixabay.com/photo/2016/03/27/18/10/bear-1283347_1280.jpg",
-		FavoriteCount: 0,
-		CommentCount:  0,
-		IsFavorite:    false,
-	}, {
-		ID:            4,
-		Author:        DemoUser,
-		PlayUrl:       "https://www.w3schools.com/html/movie.mp4",
-		CoverUrl:      "https://cdn.pixabay.com/photo/2016/03/27/18/10/bear-1283347_1280.jpg",
-		FavoriteCount: 0,
-		CommentCount:  0,
-		IsFavorite:    false,
-	}, {
-		ID:            5,
-		Author:        DemoUser,
-		PlayUrl:       "https://www.w3schools.com/html/movie.mp4",
-		CoverUrl:      "https://cdn.pixabay.com/photo/2016/03/27/18/10/bear-1283347_1280.jpg",
-		FavoriteCount: 0,
-		CommentCount:  0,
-		IsFavorite:    false,
-	}, {
-		ID:            6,
-		Author:        DemoUser,
-		PlayUrl:       "http://tiktok.tudoutiao.pro/video/24ce64ccfc93b4a44681de669216561d.mp4",
-		CoverUrl:      "https://cdn.pixabay.com/photo/2016/03/27/18/10/bear-1283347_1280.jpg",
-		FavoriteCount: 0,
-		CommentCount:  0,
-		IsFavorite:    false,
-	}, {
-		ID:            7,
-		Author:        DemoUser,
-		PlayUrl:       "http://tiktok.tudoutiao.pro/video/67d84e3c3984800c0d8f3c075ad97e31.mp4",
-		CoverUrl:      "https://cdn.pixabay.com/photo/2016/03/27/18/10/bear-1283347_1280.jpg",
-		FavoriteCount: 0,
-		CommentCount:  0,
-		IsFavorite:    false,
-	}, {
-		ID:            8,
-		Author:        DemoUser,
-		PlayUrl:       "http://tiktok.tudoutiao.pro/video/6c3b5c9e0acd8c1c751a1d757249998d.mp4",
-		CoverUrl:      "https://cdn.pixabay.com/photo/2016/03/27/18/10/bear-1283347_1280.jpg",
-		FavoriteCount: 0,
-		CommentCount:  0,
-		IsFavorite:    false,
-	}, {
-		ID:            9,
-		Author:        DemoUser,
-		PlayUrl:       "http://tiktok.tudoutiao.pro/video/70934a9e7e661341d0237d50aa94d980.mp4",
-		CoverUrl:      "https://cdn.pixabay.com/photo/2016/03/27/18/10/bear-1283347_1280.jpg",
-		FavoriteCount: 0,
-		CommentCount:  0,
-		IsFavorite:    false,
-	},
+	// 朋友列表
+	apiRouter.GET("/relation/friend/list/", middleware.JWTAuthMiddleware(), web.RelationController.FriendList)
+
+	// 发送消息
+	apiRouter.POST("/message/action/", middleware.JWTAuthMiddleware(), web.MessageController.MessageAction)
+
+	// 聊天记录
+	apiRouter.GET("/message/chat/", middleware.JWTAuthMiddleware(), web.MessageController.MessageChat)
+
 }

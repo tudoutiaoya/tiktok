@@ -52,3 +52,11 @@ type CommentVo struct {
 	Content   string `json:"content,omitempty"`
 	CreatedAt string `json:"create_date,omitempty"`
 }
+
+type MessageVo struct {
+	ID         int64  `json:"id,omitempty"`
+	UserID     int64  `json:"from_user_id"`
+	ToUserID   int64  `json:"to_user_id"`
+	Content    string `json:"content,omitempty"`
+	CreateTime int64  `json:"create_time,omitempty"`
+}

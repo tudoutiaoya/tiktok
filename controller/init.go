@@ -8,6 +8,8 @@ type Controllers struct {
 	*PublishController
 	*FavoriteController
 	*CommentController
+	*RelationController
+	*MessageController
 }
 
 func InitController(services *service.Services) *Controllers {
@@ -17,5 +19,7 @@ func InitController(services *service.Services) *Controllers {
 		PublishController:  NewPublishController(services.VideoService),
 		FavoriteController: NewFavoriteController(services.VideoService),
 		CommentController:  NewCommentController(services.CommentService),
+		RelationController: NewRelationController(services.RelationService),
+		MessageController:  NewMessageController(services.MessageService),
 	}
 }

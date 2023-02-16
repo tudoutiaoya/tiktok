@@ -42,8 +42,29 @@ type CommentActionParam struct {
 
 // 评论列表
 type CommentListParam struct {
-	Token   string `form:"token""`                      // 用户鉴权token
+	Token   string `form:"token"`                       // 用户鉴权token
 	VideoID int64  `form:"video_id" binding:"required"` // 视频id
+}
+
+// RelationActionParam 关注操作
+type RelationActionParam struct {
+	Token      string `form:"token"`                                    // 用户鉴权token
+	ToUserID   int64  `form:"to_user_id" binding:"required"`            // 视频id
+	ActionType int64  `form:"action_type" binding:"required,oneof=1 2"` // 1-关注 2-取消关注
+}
+
+// MessageAction 发送消息
+type MessageAction struct {
+	Token      string `form:"token"`       // 用户鉴权token
+	ToUserID   int64  `form:"to_user_id"`  // 对方用户id
+	ActionType int    `form:"action_type"` // 1-发送消息
+	Content    string `form:"content"`     // 消息内容
+}
+
+// MessageChat 聊天记录
+type MessageChat struct {
+	Token    string `form:"token"`      // 用户鉴权token
+	ToUserID int64  `form:"to_user_id"` // 对方用户id
 }
 
 // TokenParam JWT中间件判断token是否合法

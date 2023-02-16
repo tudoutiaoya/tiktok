@@ -16,6 +16,10 @@ type UserService struct {
 	userDao *dao.UserDao
 }
 
+func NewUserService(userDao *dao.UserDao) *UserService {
+	return &UserService{userDao: userDao}
+}
+
 func (s *UserService) Register(username string, password string) (*domain.User, error) {
 	// 验证参数
 	if len(username) == 0 || len(password) == 0 {
@@ -86,10 +90,4 @@ func (s *UserService) IsLogin(token string) (bool, *jwtutil.CustomClaims) {
 		return false, nil
 	}
 	return true, parseToken
-}
-
-func NewUserService(userDao *dao.UserDao) *UserService {
-	return &UserService{
-		userDao: userDao,
-	}
 }
