@@ -1,4 +1,4 @@
-package middleware
+package mjwt
 
 import (
 	"github.com/gin-gonic/gin"

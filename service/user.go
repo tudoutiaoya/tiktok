@@ -2,15 +2,21 @@ package service
 
 import (
 	"errors"
+	"fmt"
 	"github.com/jinzhu/copier"
+	"math/rand"
 	"tiktok/controller/response"
 	"tiktok/dao"
 	"tiktok/domain"
 	"tiktok/util/encryptutil"
 	"tiktok/util/jwtutil"
+	"time"
 )
 
 const SALT = "wokanguoliuxingzhuiruodimian"
+
+const AVATAR_PREFIX = "http://tiktok.tudoutiao.pro/avatar/"
+const AVATAR_SUFFIX = ".jfif"
 
 type UserService struct {
 	userDao *dao.UserDao
@@ -36,11 +42,15 @@ func (s *UserService) Register(username string, password string) (*domain.User, 
 	if count > 0 {
 		return nil, errors.New("用户已经存在")
 	}
+	// 生成随机头像
+	rand.Seed(time.Now().UnixMilli())
+	avatar := AVATAR_PREFIX + fmt.Sprintf("%d", rand.Intn(10)+1) + AVATAR_SUFFIX
 	// 加密保存到数据库
 	hashPassword, _ := encryptutil.HashPassword(password)
 	user := &domain.User{
 		UserName: username,
 		PassWord: hashPassword,
+		Avatar:   avatar,
 	}
 	err := s.userDao.CreatUse(user)
 	if err != nil {

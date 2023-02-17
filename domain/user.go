@@ -8,6 +8,7 @@ type User struct {
 	PassWord      string `gorm:"column:password;type:varchar(255);not null"`
 	FollowCount   int64  `gorm:"default:0"`
 	FollowerCount int64  `gorm:"default:0"`
+	Avatar        string `gorm:"column:avatar"`
 }
 
 func (u User) TableName() string {

@@ -22,6 +22,9 @@ const LIKE_ACTION = 1
 // DISLIKE_ACTION 取消点赞
 const DISLIKE_ACTION = 2
 
+// 视频第一帧
+const VIDEO_FRAME = "?vframe/jpg/offset/1"
+
 type VideoService struct {
 	videoDao    *dao.VideoDao
 	userDao     *dao.UserDao
@@ -112,7 +115,7 @@ func (s *VideoService) SaveVideo(id int64, title string, file *multipart.FileHea
 		return errors.New("文件上传失败")
 	}
 
-	coverUrl := "https://cdn.pixabay.com/photo/2016/03/27/18/10/bear-1283347_1280.jpg"
+	coverUrl := playUrl + VIDEO_FRAME
 	var video = domain.Video{
 		PlayUrl:  playUrl,
 		CoverUrl: coverUrl,

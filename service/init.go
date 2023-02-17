@@ -1,6 +1,9 @@
 package service
 
-import "tiktok/dao"
+import (
+	"tiktok/dao"
+	"tiktok/middleware/mredis"
+)
 
 type Services struct {
 	*UserService
@@ -15,7 +18,7 @@ func InitService(databases *dao.Databases) *Services {
 	videoService := NewVideoService(databases.VideoDao, databases.UserDao, userService, databases.RelationDao)
 	commentService := NewCommentService(databases.CommentDao, userService)
 	relationService := NewRelationService(databases.RelationDao, userService)
-	messageService := NewMessageService(databases.MessageDao)
+	messageService := NewMessageService(databases.MessageDao, mredis.RedisClient)
 	return &Services{
 		UserService:     userService,
 		VideoService:    videoService,
