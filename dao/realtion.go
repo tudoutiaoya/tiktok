@@ -37,9 +37,14 @@ func (d *RelationDao) FollowList(userID int64) ([]domain.User, error) {
 
 func (d *RelationDao) FansList(userID int64) ([]domain.User, error) {
 	var userIDs []int64
-	subQuery := d.db.Model(&domain.Relation{}).Select("user_id").Where("to_user_id = ?", userID).Find(&userIDs)
+	// 使用两个子查询
+	subQuery1 := d.db.Model(&domain.Relation{}).Select("user_id").Where("to_user_id = ?", userID).Find(&userIDs)
+	// SELECT * FROM `user` WHERE id in
+	//   (SELECT `to_user_id` FROM `relation` WHERE to_user_id in
+	//           (SELECT `user_id` FROM `relation` WHERE to_user_id = 2) and user_id = 2);
+	subQuery2 := d.db.Model(&domain.Relation{}).Select("to_user_id").Where("to_user_id in (?) and user_id = ?", subQuery1, userID).Find(&userIDs)
 	var users []domain.User
-	err := d.db.Where("id in (?)", subQuery).Find(&users).Error
+	err := d.db.Where("id in (?)", subQuery2).Find(&users).Error
 	return users, err
 }
 
