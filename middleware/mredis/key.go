@@ -15,3 +15,9 @@ func GetToUserChatEmailKey(userID int64, toUserID int64) string {
 func GetMyChatEmailKey(userID int64, toUserID int64) string {
 	return fmt.Sprintf("%s%d:%d", CHAT_ROOM_MESSAGE, userID, toUserID)
 }
+
+// FOLLOW_LIST 用户关注列表
+var FOLLOW_LIST = "douyin:follow:"
+
+// FOLLOWER_LIST 用户粉丝列表
+var FOLLOWER_LIST = "douyin:follower:"

@@ -45,6 +45,8 @@ type UserVo struct {
 	FollowerCount int64  `json:"follower_count,omitempty"`
 	IsFollow      bool   `json:"is_follow,omitempty"`
 	Avatar        string `json:"avatar,omitempty"`
+	WorkCount     int64  `json:"work_count,omitempty"`
+	FavoriteCount int64  `json:"favorite_count,omitempty"`
 }
 
 type CommentVo struct {
@@ -60,4 +62,10 @@ type MessageVo struct {
 	ToUserID   int64  `json:"to_user_id"`
 	Content    string `json:"content,omitempty"`
 	CreateTime int64  `json:"create_time,omitempty"`
+}
+
+type FriendUser struct {
+	UserVo
+	Message string `json:"message,omitempty"`
+	MsgType int64  `json:"msgType"`
 }

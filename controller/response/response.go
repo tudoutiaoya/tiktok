@@ -45,6 +45,12 @@ type UserListResponse struct {
 	UserList []UserVo `json:"user_list"`
 }
 
+// UserListResponse 朋友列表
+type FriendListResponse struct {
+	Response
+	FriendList []FriendUser `json:"user_list"`
+}
+
 // MessageChatResponse 消息列表
 type MessageChatResponse struct {
 	Response

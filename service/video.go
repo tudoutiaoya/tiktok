@@ -77,7 +77,7 @@ func (s *VideoService) videosToVideoVos(videos []domain.Video, knownLogin bool, 
 			// TODO 等点赞接口
 			parseToken, _ := jwtutil.ParseToken(token)
 			userID := parseToken.ID
-			isLike, _ := s.videoDao.IsLike(int64(author.ID), int64(video.ID))
+			isLike, _ := s.videoDao.IsLike(userID, int64(video.ID))
 			videoVo.IsFavorite = isLike
 			isHas, _ := s.relationDao.IsHas(userID, int64(author.ID))
 			videoVo.Author.IsFollow = isHas

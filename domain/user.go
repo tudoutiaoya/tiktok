@@ -9,6 +9,8 @@ type User struct {
 	FollowCount   int64  `gorm:"default:0"`
 	FollowerCount int64  `gorm:"default:0"`
 	Avatar        string `gorm:"column:avatar"`
+	WorkCount     int64  `gorm:"column:work_count"`
+	FavoriteCount int64  `gorm:"column:favorite_count"`
 }
 
 func (u User) TableName() string {

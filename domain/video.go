@@ -9,7 +9,7 @@ type Video struct {
 	FavoriteCount int64  `gorm:"default:0"`
 	CommentCount  int64  `gorm:"default:0"`
 	Title         string `gorm:"type:varchar(255);not null"`
-	AuthorID      int64  `gorm:"not null"`
+	AuthorID      int64  `gorm:"not null;index"`
 }
 
 func (v *Video) TableName() string {

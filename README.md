@@ -122,6 +122,18 @@ Bcriypt加密
 
 
 
+优化：
+
+redis
+
+​	video_count  视频点赞数
+
+​	user_like	用户喜欢列表
+
+
+
+
+
 ### 喜欢列表
 
 登录拦截
@@ -231,6 +243,26 @@ todo:
 todo:
 
 添加最新消息
+
+
+
+不断迭代过程：
+
+数据库复杂查询语句：
+
+```sql
+// SELECT * FROM `user` WHERE id in
+//   (SELECT `to_user_id` FROM `relation` WHERE to_user_id in
+//           (SELECT `user_id` FROM `relation` WHERE to_user_id = 2) and user_id = 2);
+```
+
+
+
+之后添加好友列表redis当中
+
+
+
+再之后可以放入到neo4j当中
 
 
 

@@ -61,7 +61,7 @@ func (c *RelationController) FriendList(context *gin.Context) {
 		response.SendErrResponse(context, errno.ParamIllegal)
 		return
 	}
-	result, err := c.relationService.FollowerList(currentUserParam.UserID)
+	result, err := c.relationService.FriendList(currentUserParam.UserID)
 	if err != nil {
 		response.SendErrResponse(context, errno.HandleServiceErrRes(err))
 		return

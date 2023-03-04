@@ -4,7 +4,7 @@ import "gorm.io/gorm"
 
 type Comment struct {
 	gorm.Model
-	VideoID int64  `gorm:"column:video_id;not null"`
+	VideoID int64  `gorm:"column:video_id;not null;index"`
 	UserID  int64  `gorm:"column:user_id;not null"`
 	Content string `gorm:"type:varchar(255);not null"`
 }

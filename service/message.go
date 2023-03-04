@@ -40,7 +40,7 @@ func (s *MessageService) MessageAction(userID int64, toUserID int64, actionType 
 		mes, _ := json.Marshal(messageVo)
 		fmt.Println("发送给对方的消息:", messageVo)
 		s.redisClient.RPush(key, mes)
-		// todo mq异步保存到数据库
+		// mq异步保存到数据库
 		var message domain.Message
 		copier.Copy(&message, &messageVo)
 		message.CreatedAt = time.Unix(messageVo.CreateTime, 0)
@@ -61,6 +61,9 @@ func (s *MessageService) MessageChat(userID int64, toUserID int64) (*response.Me
 	// 获取我自己的邮箱
 	key := mredis.GetMyChatEmailKey(userID, toUserID)
 	list, err := s.redisClient.LRange(key, 0, -1).Result()
+	// 清空所有
+	s.redisClient.LTrim(key, 1, 0)
+
 	var messages []response.MessageVo
 	for _, str := range list {
 		var mes response.MessageVo
@@ -70,8 +73,7 @@ func (s *MessageService) MessageChat(userID int64, toUserID int64) (*response.Me
 	if err != nil {
 		return nil, errors.New("获取消息列表错误")
 	}
-	// 清空所有
-	s.redisClient.LTrim(key, 1, 0)
+
 	fmt.Println("接收到的消息", messages)
 	//redisClient.Eval()
 	//var messageChatVoList = ChatListToVo(messageChatList)
